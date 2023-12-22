@@ -45,5 +45,74 @@
   const app = express();
   
   app.use(bodyParser.json());
+  let todos=[]
+
+  app.get('/todos',(req,res)=>{
+    res.json(todos);
+  })
   
-  module.exports = app;
+  app.get('/todos/:id',(req,res)=>{
+    let k=0;
+    for(let i=0;i<todos.length;i++){
+      if(parseInt(req.params.id) === todos[i].id){
+        res.json(todos[i]);
+        k++;
+        break;
+      }
+      
+    }
+    if(k==0){
+      res.status(404).send()
+    }
+  })
+
+
+  app.post('/todos',(req,res)=>{
+    const newtodo={
+      id: Math.floor(Math.random()*100000),
+      title:req.body.title,
+      description:req.body.description
+
+    };
+    todos.push(newtodo);
+    res.status(201).json(newtodo);
+
+  })
+
+  app.put('/todos/:id',(req,res)=>{
+
+    for(let i=0;i<todos.length();i++){
+      if(parseInt(todos[i].id)===req.params.id){
+        todos[i].title = req.body.title;
+        todos[i].description=req.body.description;
+        res.json(todos[i])
+        
+      }
+    }
+
+  })
+
+  app.delete('/todos/:id',(req,res)=>{
+    let m=0;
+    for(let i=0;i<todos.length();i++){
+      if(req.params.id===parseInt(todos[i].id)){
+        todos.splice(i,1);
+         m++;
+         res.status(200).send();
+      }
+     
+    }
+    if(m==0){
+      res.status(404).json('file not found');
+    }
+  })
+
+  app.get('*',(req,res)=>{
+    res.status(404).send('file not found');
+  })
+
+  app.listen(5500,()=>{
+    console.log('server is listening');
+  })
+  
+  // module.exports = app; 
