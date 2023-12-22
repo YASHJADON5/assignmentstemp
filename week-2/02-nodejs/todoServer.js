@@ -80,12 +80,13 @@
   })
 
   app.put('/todos/:id',(req,res)=>{
-
-    for(let i=0;i<todos.length();i++){
-      if(parseInt(todos[i].id)===req.params.id){
+    const identity= parseInt(req.params.id);
+    for(let i=0;i<todos.length;i++){
+      if(parseInt(todos[i].id)===identity){
         todos[i].title = req.body.title;
         todos[i].description=req.body.description;
         res.json(todos[i])
+        break;
         
       }
     }
@@ -94,11 +95,12 @@
 
   app.delete('/todos/:id',(req,res)=>{
     let m=0;
-    for(let i=0;i<todos.length();i++){
-      if(req.params.id===parseInt(todos[i].id)){
+    for(let i=0;i<todos.length;i++){
+      if(parseInt(req.params.id)===parseInt(todos[i].id)){
         todos.splice(i,1);
          m++;
          res.status(200).send();
+         break;
       }
      
     }
