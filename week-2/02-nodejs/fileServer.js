@@ -12,6 +12,7 @@
     - For any other route not defined in the server return 404
     Testing the server - run `npm run test-fileServer` command in terminal
  */
+
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -21,35 +22,36 @@ app.get('/files',(req,res)=>{
 
   fs.readdir(path.join(__dirname,'./files/'),(err,files)=>{
          if(err){
-              res.status(500).json({error: 'there is an internal error'})
+               res.status(500).json({error: 'there is an internal error'})
          }
          res.json(files);
   })
 
 })
-app.get('/file/:filename',(req,res)=>{
+
+app.get('/file/:filename', function (req, res) {
+  const filepath = path.join(__dirname, './files/', req.params.filename);
+
+  fs.readFile(filepath, 'utf8', (err, data) => {
+  if (err) {
+       res.status(404).send('File not found');
+  }else{
+
+    res.status(200).send(data);
+  }
+  });
+});
 
 
-  const filePath=path.join(__dirname,'./files/',req.params.filename)
-  
-  fs.readFile(filePath,'utf8',(err,data)=>{
-    if(err){
-            return res.status(404).send('file not found');
-    }
-    
-    res.send(data);
-  })
-
-})
-
-app.get('*',(req,res)=>{
-  return res.status(404).send('file not found')
-})
-const port=2000;
-
-app.listen(port,()=>{
-  console.log('server is listening')
-})
 
 
-// module.exports = app;
+app.get('*', (req, res) => {
+  res.status(404).send('Route not found');
+});
+// const port=2000;
+// app.listen(port,()=>{
+//   console.log('server is listening')
+// });
+
+
+module.exports = app;
